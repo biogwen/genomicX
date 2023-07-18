@@ -1,0 +1,31 @@
+<html>
+<body>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label for="lead_chromosome">Lead Chromosome</label><br>
+        <input type="text" id="lead_chromosome" name="lead_chromosome" value="{{ form.lead_chromosome.data }}"><br>
+        <label for="lead_position">Lead Position</label><br>
+        <input type="text" id="lead_position" name="lead_position" value="{{ form.lead_position.data }}"><br>
+        <label for="tag_chromosome">Tag Chromosome</label><br>
+        <input type="text" id="tag_chromosome" name="tag_chromosome" value="{{ form.tag_chromosome.data }}"><br>
+        <label for="tag_position">Tag Position</label><br>
+        <input type="text" id="tag_position" name="tag_position" value="{{ form.tag_position.data }}"><br>
+        <label for="disease">Disease</label><br>
+        <input type="text" id="disease" name="disease" value="{{ form.disease.data }}" list="diseases"><br>
+        <datalist id="diseases">
+            {% for disease in disease_list %}
+                <option value="{{ disease }}">
+            {% endfor %}
+        </datalist>
+        {{ form.submit() }}
+    </form>
+    {% if form.lead_chromosome.errors %}
+    <ul class="errors">
+        {% for error in form.lead_chromosome.errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {{ table|safe }}
+</body>
+</html>
