@@ -8,6 +8,28 @@ from google.cloud import bigquery
 # Construct a BigQuery client object.
 client = bigquery.Client()
 
+query_lead = """
+SELECT lead_chrom, trait_reported, COUNT(*) AS count
+FROM `thegwensproject.genomiX.disease_variant_gene`
+GROUP BY lead_chrom, trait_reported;
+"""
+
+query_tag = """
+SELECT tag_chrom, trait_reported, COUNT(*) AS count
+FROM `thegwensproject.genomiX.disease_variant_gene`
+GROUP BY tag_chrom, trait_reported;
+"""
+
+df_lead = client.query(query_lead).to_dataframe()
+df_tag = client.query(query_tag).to_dataframe()
+
+df_lead_pivot = df_lead.pivot(index='trait_reported', columns='lead_chrom')
+df_tag_pivot = df_tag.pivot(index='trait_reported', columns='tag_chrom')
+
+df_combined = df_lead_pivot.join(df_tag_pivot, lsuffix='_lead', rsuffix='_tag')
+
+df_combined.reset_index(inplace=True)
+
 
 class DiseaseForm(FlaskForm):
     lead_chromosome = StringField('Lead Chromosome', validators=[DataRequired()])
